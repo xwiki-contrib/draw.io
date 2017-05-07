@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ *
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ *
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.xwiki.contrib</groupId>
+    <artifactId>parent-commons</artifactId>
+    <version>8.4-7</version>
+  </parent>
+  <artifactId>draw.io</artifactId>
+  <packaging>jar</packaging>
+  <name>draw.io WebJar</name>
+  <version>6.5.7-SNAPSHOT</version>
+  <description>Provides WebJar packaging for the draw.io JavaScript diagramming library.</description>
+  <developers>
+    <developer>
+      <id>mflorea</id>
+      <name>Marius Dumitru Florea</name>
+    </developer>
+  </developers>
+  <scm>
+    <connection>scm:git:git://github.com/xwiki-contrib/draw.io.git</connection>
+    <developerConnection>scm:git:git@github.com:xwiki-contrib/draw.io.git</developerConnection>
+    <url>https://github.com/xwiki-contrib/draw.io/tree/master</url>
+    <tag>HEAD</tag>
+  </scm>
+  <properties>
+    <draw.io.version>6.5.7</draw.io.version>
+    <!-- The path to the folder where we unpack the draw.io sources. -->
+    <draw.io.path>${project.build.directory}/draw.io-${draw.io.version}</draw.io.path>
+    <!-- Follow the specifications regarding the WebJar content path. -->
+    <webjar.contentDirectory>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</webjar.contentDirectory>
+    <!-- Explicitely indicate it's a webjar -->
+    <xwiki.extension.jar.type>webjar</xwiki.extension.jar.type>
+    <!-- No Java code here -->
+    <xwiki.clirr.skip>true</xwiki.clirr.skip>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>mxgraph-editor</artifactId>
+      <version>3.7.2-SNAPSHOT</version>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.googlecode.maven-download-plugin</groupId>
+        <artifactId>download-maven-plugin</artifactId>
+        <version>1.3.0</version>
+        <executions>
+          <!-- Download the draw.io sources for the version (tag) we want to use. -->
+          <execution>
+            <id>download-draw.io-sources</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>wget</goal>
+            </goals>
+            <configuration>
+              <url>https://github.com/jgraph/draw.io/archive/v${draw.io.version}.zip</url>
+              <unpack>true</unpack>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>net.alchim31.maven</groupId>
+        <artifactId>yuicompressor-maven-plugin</artifactId>
+        <version>1.5.1</version>
+        <executions>
+          <execution>
+            <!-- Minify the draw.io editor code before packing the jar. -->
+            <id>minify-draw.io-code</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>compress</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${draw.io.path}/war</sourceDirectory>
+              <outputDirectory>${draw.io.path}/war</outputDirectory>
+              <excludes>
+                <exclude>**/*.css</exclude>
+                <exclude>**/*.min.js</exclude>
+                <exclude>**/diagramly/**/*.js</exclude>
+                <exclude>**/embed.dev.js</exclude>
+                <exclude>**/electron.js</exclude>
+              </excludes>
+              <aggregations>
+                <!-- Aggregate the draw.io editor code. -->
+                <aggregation>
+                  <insertNewLine>true</insertNewLine>
+                  <output>${draw.io.path}/war/js/draw.io.js</output>
+                  <includes>
+                    <!--                                           -->
+                    <!-- The following list is taken from Devel.js -->
+                    <!--                                           -->
+                    <!-- We don't include the dependencies (spin, base64, etc.). We load them with require.js -->
+                    <!-- We don't include the mxGraph client/editor. We load them with requrie.js -->
+                    <include>diagramly/sidebar/*.js</include>
+                    <include>diagramly/util/*.js</include>
+                    <include>diagramly/DrawioFile.js</include>
+                    <include>diagramly/LocalFile.js</include>
+                    <include>diagramly/LocalLibrary.js</include>
+                    <include>diagramly/StorageFile.js</include>
+                    <include>diagramly/StorageLibrary.js</include>
+                    <include>diagramly/Dialogs.js</include>
+                    <include>diagramly/Editor.js</include>
+                    <include>diagramly/EditorUi.js</include>
+                    <include>diagramly/Settings.js</include>
+                    <!-- We don't include the integration with Google Drive, Dropbox, etc. -->
+                    <include>diagramly/App.js</include>
+                    <include>diagramly/Menus.js</include>
+                    <!-- We don't include Pages.js because we don't need support for tabbed UI. -->
+                    <!-- We don't include the development tools. -->
+                  </includes>
+                </aggregation>
+                <!-- Aggregate the draw.io viewer code. -->
+                <aggregation>
+                  <insertNewLine>true</insertNewLine>
+                  <output>${draw.io.path}/war/js/draw.io.viewer.js</output>
+                  <includes>
+                    <!-- This file is not included in mxGraphViewer. -->
+                    <include>mxgraph/Editor.js</include>
+                    <include>diagramly/Editor.js</include>
+                    <include>diagramly/GraphViewer.js</include>
+                  </includes>
+                </aggregation>
+                <!-- Aggregate the draw.io initialization code. -->
+                <aggregation>
+                  <insertNewLine>true</insertNewLine>
+                  <output>${draw.io.path}/war/js/draw.io.init.js</output>
+                  <includes>
+                    <include>diagramly/Init.js</include>
+                    <!-- Fall-back on the Graph Editor defaults. -->
+                    <include>mxgraph/Init.js</include>
+                  </includes>
+                </aggregation>
+              </aggregations>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- Minify the draw.io editor style sheets before packing the jar. -->
+            <id>minify-draw.io-style</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>compress</goal>
+            </goals>
+            <configuration>
+              <sourceDirectory>${draw.io.path}/war</sourceDirectory>
+              <outputDirectory>${draw.io.path}/war</outputDirectory>
+              <excludes>
+                <exclude>**/*.js</exclude>
+              </excludes>
+              <!-- Overwrite the original version with the minified one because some of the style sheets are loaded
+                automatically by the JavaScript code so we shouldn't change their name. -->
+              <nosuffix>true</nosuffix>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <preProcessAggregates>true</preProcessAggregates>
+          <jswarn>false</jswarn>
+          <!-- The default suffix uses the dash as separator (-min) but we prefer the dot (.min) because it is
+            currently more widely used in the JavaScript world. -->
+          <suffix>.min</suffix>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <!-- Copy the draw.io license. -->
+          <execution>
+            <id>copy-draw.io-license</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/META-INF</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${draw.io.path}</directory>
+                  <includes>
+                    <include>LICENSE</include>
+                  </includes>
+                </resource>
+              </resources>
+              <overwrite>true</overwrite>
+            </configuration>
+          </execution>
+          <!-- Copy the dra.io resources to the expected WebJar location. -->
+          <execution>
+            <id>copy-draw.io-resources</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${webjar.contentDirectory}</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${draw.io.path}/war</directory>
+                  <excludes>
+                    <exclude>WEB-INF/**</exclude>
+                    <exclude>js/jscolor/**</exclude>
+                    <exclude>js/mxgraph/**</exclude>
+                    <exclude>js/sanitizer/**</exclude>
+                    <exclude>mxgraph/**</exclude>
+                    <exclude>cache.manifest</exclude>
+                    <exclude>favicon.ico</exclude>
+                    <exclude>package.json</exclude>
+                  </excludes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
