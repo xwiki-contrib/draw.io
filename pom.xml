@@ -32,7 +32,7 @@
   <artifactId>draw.io</artifactId>
   <packaging>jar</packaging>
   <name>draw.io WebJar</name>
-  <version>6.5.8-SNAPSHOT</version>
+  <version>7.9.8-SNAPSHOT</version>
   <description>Provides WebJar packaging for the draw.io JavaScript diagramming library.</description>
   <developers>
     <developer>
@@ -47,9 +47,9 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <draw.io.version>6.5.7</draw.io.version>
+    <draw.io.version>7.9.8</draw.io.version>
     <!-- The path to the folder where we unpack the draw.io sources. -->
-    <draw.io.path>${project.build.directory}/draw.io-${draw.io.version}</draw.io.path>
+    <draw.io.path>${project.build.directory}/drawio-${draw.io.version}</draw.io.path>
     <!-- Follow the specifications regarding the WebJar content path. -->
     <webjar.contentDirectory>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</webjar.contentDirectory>
     <!-- Explicitely indicate it's a webjar -->
@@ -80,7 +80,7 @@
               <goal>wget</goal>
             </goals>
             <configuration>
-              <url>https://github.com/jgraph/draw.io/archive/v${draw.io.version}.zip</url>
+              <url>https://github.com/jgraph/drawio/archive/v${draw.io.version}.zip</url>
               <unpack>true</unpack>
             </configuration>
           </execution>
