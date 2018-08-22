@@ -32,7 +32,7 @@
   <artifactId>draw.io</artifactId>
   <packaging>jar</packaging>
   <name>draw.io WebJar</name>
-  <version>7.9.8-SNAPSHOT</version>
+  <version>8.9.9-SNAPSHOT</version>
   <description>Provides WebJar packaging for the draw.io JavaScript diagramming library.</description>
   <developers>
     <developer>
@@ -47,9 +47,10 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <draw.io.version>7.9.8</draw.io.version>
+    <draw.io.version>8.9.9</draw.io.version>
     <!-- The path to the folder where we unpack the draw.io sources. -->
     <draw.io.path>${project.build.directory}/drawio-${draw.io.version}</draw.io.path>
+    <draw.io.webapp.path>${draw.io.path}/src/main/webapp</draw.io.webapp.path>
     <!-- Follow the specifications regarding the WebJar content path. -->
     <webjar.contentDirectory>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</webjar.contentDirectory>
     <!-- Explicitely indicate it's a webjar -->
@@ -61,7 +62,7 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>mxgraph-editor</artifactId>
-      <version>3.7.2</version>
+      <version>3.9.8</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
@@ -99,20 +100,24 @@
               <goal>compress</goal>
             </goals>
             <configuration>
-              <sourceDirectory>${draw.io.path}/war</sourceDirectory>
-              <outputDirectory>${draw.io.path}/war</outputDirectory>
+              <sourceDirectory>${draw.io.webapp.path}</sourceDirectory>
+              <outputDirectory>${draw.io.webapp.path}</outputDirectory>
               <excludes>
                 <exclude>**/*.css</exclude>
                 <exclude>**/*.min.js</exclude>
                 <exclude>**/diagramly/**/*.js</exclude>
                 <exclude>**/embed.dev.js</exclude>
                 <exclude>**/electron.js</exclude>
+                <!-- We exclude the following JavaScript files because it uses ES6 features (e.g. default parameters) and
+                  YUI Compressor doesn't support ES6 (https://github.com/yui/yuicompressor/issues/262). -->
+                <exclude>**/plugins/webcola/mxWebColaLayout.js</exclude>
+                <exclude>**/mxgraph/Graph.js</exclude>
               </excludes>
               <aggregations>
                 <!-- Aggregate the draw.io editor code. -->
                 <aggregation>
                   <insertNewLine>true</insertNewLine>
-                  <output>${draw.io.path}/war/js/draw.io.js</output>
+                  <output>${draw.io.webapp.path}/js/draw.io.js</output>
                   <includes>
                     <!--                                           -->
                     <!-- The following list is taken from Devel.js -->
@@ -134,16 +139,24 @@
                     <include>diagramly/App.js</include>
                     <include>diagramly/Menus.js</include>
                     <!-- We don't include Pages.js because we don't need support for tabbed UI. -->
+                    <include>diagramly/Trees.js</include>
+                    <include>diagramly/Minimal.js</include>
                     <!-- We don't include the development tools. -->
+                    <include>diagramly/vsdx/*.js</include>
+                    <!-- We load jszip with require.js -->
+                    <include>diagramly/ruler/*.js</include>
+                    <include>diagramly/DistanceGuides.js</include>
+                    <include>diagramly/graphml/*.js</include>
                   </includes>
                 </aggregation>
                 <!-- Aggregate the draw.io viewer code. -->
                 <aggregation>
                   <insertNewLine>true</insertNewLine>
-                  <output>${draw.io.path}/war/js/draw.io.viewer.js</output>
+                  <output>${draw.io.webapp.path}/js/draw.io.viewer.js</output>
                   <includes>
                     <!-- This file is not included in mxGraphViewer. -->
                     <include>mxgraph/Editor.js</include>
+                    <include>mxgraph/EditorUi.js</include>
                     <include>diagramly/Editor.js</include>
                     <include>diagramly/GraphViewer.js</include>
                   </includes>
@@ -151,7 +164,7 @@
                 <!-- Aggregate the draw.io initialization code. -->
                 <aggregation>
                   <insertNewLine>true</insertNewLine>
-                  <output>${draw.io.path}/war/js/draw.io.init.js</output>
+                  <output>${draw.io.webapp.path}/js/draw.io.init.js</output>
                   <includes>
                     <include>diagramly/Init.js</include>
                     <!-- Fall-back on the Graph Editor defaults. -->
@@ -169,8 +182,8 @@
               <goal>compress</goal>
             </goals>
             <configuration>
-              <sourceDirectory>${draw.io.path}/war</sourceDirectory>
-              <outputDirectory>${draw.io.path}/war</outputDirectory>
+              <sourceDirectory>${draw.io.webapp.path}</sourceDirectory>
+              <outputDirectory>${draw.io.webapp.path}</outputDirectory>
               <excludes>
                 <exclude>**/*.js</exclude>
               </excludes>
@@ -211,7 +224,7 @@
               <overwrite>true</overwrite>
             </configuration>
           </execution>
-          <!-- Copy the dra.io resources to the expected WebJar location. -->
+          <!-- Copy the draw.io resources to the expected WebJar location. -->
           <execution>
             <id>copy-draw.io-resources</id>
             <phase>prepare-package</phase>
@@ -222,15 +235,19 @@
               <outputDirectory>${webjar.contentDirectory}</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${draw.io.path}/war</directory>
+                  <directory>${draw.io.webapp.path}</directory>
                   <excludes>
                     <exclude>WEB-INF/**</exclude>
+                    <exclude>js/dropbox/**</exclude>
                     <exclude>js/jscolor/**</exclude>
                     <exclude>js/mxgraph/**</exclude>
                     <exclude>js/sanitizer/**</exclude>
                     <exclude>mxgraph/**</exclude>
                     <exclude>cache.manifest</exclude>
+                    <exclude>dropbox.html</exclude>
                     <exclude>favicon.ico</exclude>
+                    <exclude>github.html</exclude>
+                    <exclude>onedrive*.html</exclude>
                     <exclude>package.json</exclude>
                   </excludes>
                 </resource>
