@@ -154,10 +154,13 @@
                   <insertNewLine>true</insertNewLine>
                   <output>${draw.io.webapp.path}/js/draw.io.viewer.js</output>
                   <includes>
-                    <!-- This file is not included in mxGraphViewer. -->
-                    <include>mxgraph/Editor.js</include>
-                    <include>mxgraph/EditorUi.js</include>
+                    <!-- This is required by the light box mode. -->
+                    <include>diagramly/Pages.js</include>
+                    <!-- This is required by the tool bar (addSvgShadow) -->
                     <include>diagramly/Editor.js</include>
+                    <!-- This is required by the light box mode (setFileData). -->
+                    <include>diagramly/EditorUi.js</include>
+                    <!-- This is required to view the diagram. -->
                     <include>diagramly/GraphViewer.js</include>
                   </includes>
                 </aggregation>
