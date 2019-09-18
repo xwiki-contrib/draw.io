@@ -32,7 +32,7 @@
   <artifactId>draw.io</artifactId>
   <packaging>jar</packaging>
   <name>draw.io WebJar</name>
-  <version>11.2.8-SNAPSHOT</version>
+  <version>11.2.9-SNAPSHOT</version>
   <description>Provides WebJar packaging for the draw.io JavaScript diagramming library.</description>
   <developers>
     <developer>
@@ -47,7 +47,7 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <draw.io.version>11.2.8</draw.io.version>
+    <draw.io.version>11.2.9</draw.io.version>
     <!-- The path to the folder where we unpack the draw.io sources. -->
     <draw.io.path>${project.build.directory}/drawio-${draw.io.version}</draw.io.path>
     <draw.io.webapp.path>${draw.io.path}/src/main/webapp</draw.io.webapp.path>
@@ -136,20 +136,17 @@
               <goal>compress</goal>
             </goals>
             <configuration>
-              <sourceDirectory>${draw.io.webapp.path}</sourceDirectory>
-              <outputDirectory>${draw.io.webapp.path}</outputDirectory>
+              <sourceDirectory>${draw.io.webapp.path}/js</sourceDirectory>
+              <outputDirectory>${draw.io.webapp.path}/js</outputDirectory>
               <excludes>
                 <exclude>**/*.css</exclude>
                 <exclude>**/*.min.js</exclude>
-                <exclude>**/diagramly/**/*.js</exclude>
+                <!-- We minify the bundle instead. -->
+                <exclude>diagramly/**/*.js</exclude>
                 <!-- The mxGraph code is bundled as a separate extension. -->
-                <exclude>**/mxgraph/**/*.js</exclude>
-                <exclude>**/onedrive/**/*.js</exclude>
-                <exclude>**/embed.dev.js</exclude>
-                <exclude>**/electron.js</exclude>
-                <!-- We exclude the following JavaScript files because it uses ES6 features (e.g. default parameters) and
-                  YUI Compressor doesn't support ES6 (https://github.com/yui/yuicompressor/issues/262). -->
-                <exclude>**/plugins/webcola/mxWebColaLayout.js</exclude>
+                <exclude>mxgraph/**/*.js</exclude>
+                <exclude>onedrive/**/*.js</exclude>
+                <exclude>embed.dev.js</exclude>
               </excludes>
               <aggregations>
                 <!-- Aggregate the draw.io editor code. -->
