@@ -27,12 +27,12 @@
   <parent>
     <groupId>org.xwiki.contrib</groupId>
     <artifactId>parent-commons</artifactId>
-    <version>8.4-7</version>
+    <version>11.3.4</version>
   </parent>
   <artifactId>draw.io</artifactId>
   <packaging>jar</packaging>
   <name>draw.io WebJar</name>
-  <version>8.9.10-SNAPSHOT</version>
+  <version>11.2.8-SNAPSHOT</version>
   <description>Provides WebJar packaging for the draw.io JavaScript diagramming library.</description>
   <developers>
     <developer>
@@ -47,7 +47,7 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <draw.io.version>8.9.9</draw.io.version>
+    <draw.io.version>11.2.8</draw.io.version>
     <!-- The path to the folder where we unpack the draw.io sources. -->
     <draw.io.path>${project.build.directory}/drawio-${draw.io.version}</draw.io.path>
     <draw.io.webapp.path>${draw.io.path}/src/main/webapp</draw.io.webapp.path>
@@ -62,7 +62,7 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>mxgraph-editor</artifactId>
-      <version>3.9.8-1</version>
+      <version>4.0.4_${draw.io.version}-SNAPSHOT</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
@@ -71,7 +71,7 @@
       <plugin>
         <groupId>com.googlecode.maven-download-plugin</groupId>
         <artifactId>download-maven-plugin</artifactId>
-        <version>1.3.0</version>
+        <version>1.4.2</version>
         <executions>
           <!-- Download the draw.io sources for the version (tag) we want to use. -->
           <execution>
@@ -86,6 +86,42 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.google.code.maven-replacer-plugin</groupId>
+        <artifactId>replacer</artifactId>
+        <version>1.5.3</version>
+        <executions>
+          <execution>
+            <id>fix-invalid-javascript</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>replace</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <regex>false</regex>
+          <basedir>${draw.io.webapp.path}/js</basedir>
+          <includes>
+            <include>diagramly/Editor.js</include>
+            <include>diagramly/EditorUi.js</include>
+          </includes>
+          <replacements>
+            <replacement>
+              <!-- 'short' is a reserved keyword and using it as a variable name prevents us from minifying the
+                JavaScript code. Fortunately it's a local variable so we can safely rename it. -->
+              <token> short </token>
+              <value> shorter </value>
+            </replacement>
+            <replacement>
+              <!-- 'float' is a reserved keyword and using it as a property name prevents us from minifying the
+                JavaScript code. -->
+              <token>.float =</token>
+              <value>['float'] =</value>
+            </replacement>
+          </replacements>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>net.alchim31.maven</groupId>
@@ -106,12 +142,14 @@
                 <exclude>**/*.css</exclude>
                 <exclude>**/*.min.js</exclude>
                 <exclude>**/diagramly/**/*.js</exclude>
+                <!-- The mxGraph code is bundled as a separate extension. -->
+                <exclude>**/mxgraph/**/*.js</exclude>
+                <exclude>**/onedrive/**/*.js</exclude>
                 <exclude>**/embed.dev.js</exclude>
                 <exclude>**/electron.js</exclude>
                 <!-- We exclude the following JavaScript files because it uses ES6 features (e.g. default parameters) and
                   YUI Compressor doesn't support ES6 (https://github.com/yui/yuicompressor/issues/262). -->
                 <exclude>**/plugins/webcola/mxWebColaLayout.js</exclude>
-                <exclude>**/mxgraph/Graph.js</exclude>
               </excludes>
               <aggregations>
                 <!-- Aggregate the draw.io editor code. -->
@@ -122,8 +160,12 @@
                     <!--                                           -->
                     <!-- The following list is taken from Devel.js -->
                     <!--                                           -->
+
                     <!-- We don't include the dependencies (spin, base64, etc.). We load them with require.js -->
+
                     <!-- We don't include the mxGraph client/editor. We load them with requrie.js -->
+
+                    <!-- Main classes -->
                     <include>diagramly/sidebar/*.js</include>
                     <include>diagramly/util/*.js</include>
                     <include>diagramly/DrawioFile.js</include>
@@ -131,22 +173,44 @@
                     <include>diagramly/LocalLibrary.js</include>
                     <include>diagramly/StorageFile.js</include>
                     <include>diagramly/StorageLibrary.js</include>
+                    <include>diagramly/RemoteFile.js</include>
+                    <include>diagramly/RemoteLibrary.js</include>
                     <include>diagramly/Dialogs.js</include>
                     <include>diagramly/Editor.js</include>
                     <include>diagramly/EditorUi.js</include>
+                    <include>diagramly/DiffSync.js</include>
                     <include>diagramly/Settings.js</include>
+                    <include>diagramly/DrawioFileSync.js</include>
+
+                    <!-- Comments -->
+                    <include>diagramly/DrawioComment.js</include>
+                    <!-- We don't include DriveComment.js -->
+
+                    <!-- Integrations with external services -->
+                    <include>diagramly/DrawioClient.js</include>
+                    <include>diagramly/DrawioUser.js</include>
+                    <include>diagramly/UrlLibrary.js</include>
                     <!-- We don't include the integration with Google Drive, Dropbox, etc. -->
+
                     <include>diagramly/App.js</include>
                     <include>diagramly/Menus.js</include>
                     <!-- We don't include Pages.js because we don't need support for tabbed UI. -->
                     <include>diagramly/Trees.js</include>
                     <include>diagramly/Minimal.js</include>
-                    <!-- We don't include the development tools. -->
-                    <include>diagramly/vsdx/*.js</include>
-                    <!-- We load jszip with require.js -->
-                    <include>diagramly/ruler/*.js</include>
                     <include>diagramly/DistanceGuides.js</include>
+                    <include>diagramly/mxRuler.js</include>
+                    <include>diagramly/mxFreehand.js</include>
+                    <!-- We don't include the development tools. -->
+
+                    <!-- Vsdx/vssx support -->
+                    <include>diagramly/vsdx/*.js</include>
+
+                    <!-- We load jszip with require.js -->
+
+                    <!-- GraphML import -->
                     <include>diagramly/graphml/*.js</include>
+
+                    <include>diagramly/mxTableLayout.js</include>
                   </includes>
                 </aggregation>
                 <!-- Aggregate the draw.io viewer code. -->
@@ -241,17 +305,18 @@
                   <directory>${draw.io.webapp.path}</directory>
                   <excludes>
                     <exclude>WEB-INF/**</exclude>
+                    <exclude>js/deflate/**</exclude>
                     <exclude>js/dropbox/**</exclude>
                     <exclude>js/jscolor/**</exclude>
                     <exclude>js/mxgraph/**</exclude>
+                    <exclude>js/onedrive/**</exclude>
                     <exclude>js/sanitizer/**</exclude>
                     <exclude>mxgraph/**</exclude>
+                    <exclude>*.html</exclude>
                     <exclude>cache.manifest</exclude>
-                    <exclude>dropbox.html</exclude>
                     <exclude>favicon.ico</exclude>
-                    <exclude>github.html</exclude>
-                    <exclude>onedrive*.html</exclude>
                     <exclude>package.json</exclude>
+                    <exclude>yarn.lock</exclude>
                   </excludes>
                 </resource>
               </resources>
