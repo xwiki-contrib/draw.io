@@ -120,6 +120,11 @@
               <token>.float =</token>
               <value>['float'] =</value>
             </replacement>
+            <replacement>
+              <!-- Set the draw.io version. -->
+              <token>@DRAWIO-VERSION@</token>
+              <value>${draw.io.version}</value>
+            </replacement>
           </replacements>
         </configuration>
       </plugin>
@@ -191,7 +196,7 @@
 
                     <include>diagramly/App.js</include>
                     <include>diagramly/Menus.js</include>
-                    <!-- We don't include Pages.js because we don't need support for tabbed UI. -->
+                    <include>diagramly/Pages.js</include>
                     <include>diagramly/Trees.js</include>
                     <include>diagramly/Minimal.js</include>
                     <include>diagramly/DistanceGuides.js</include>
