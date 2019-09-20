@@ -62,7 +62,7 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>mxgraph-editor</artifactId>
-      <version>4.0.4_${draw.io.version}-SNAPSHOT</version>
+      <version>4.0.4_${draw.io.version}</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
