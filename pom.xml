@@ -32,7 +32,7 @@
   <artifactId>draw.io</artifactId>
   <packaging>jar</packaging>
   <name>draw.io WebJar</name>
-  <version>11.2.9-1-SNAPSHOT</version>
+  <version>12.0.0-SNAPSHOT</version>
   <description>Provides WebJar packaging for the draw.io JavaScript diagramming library.</description>
   <developers>
     <developer>
@@ -47,7 +47,7 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <draw.io.version>11.2.9</draw.io.version>
+    <draw.io.version>12.0.0</draw.io.version>
     <!-- The path to the folder where we unpack the draw.io sources. -->
     <draw.io.path>${project.build.directory}/drawio-${draw.io.version}</draw.io.path>
     <draw.io.webapp.path>${draw.io.path}/src/main/webapp</draw.io.webapp.path>
@@ -104,6 +104,7 @@
           <regex>false</regex>
           <basedir>${draw.io.webapp.path}/js</basedir>
           <includes>
+            <include>diagramly/App.js</include>
             <include>diagramly/Editor.js</include>
             <include>diagramly/EditorUi.js</include>
           </includes>
