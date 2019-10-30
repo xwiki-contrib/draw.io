@@ -32,8 +32,8 @@
   <artifactId>draw.io</artifactId>
   <packaging>jar</packaging>
   <name>draw.io WebJar</name>
-  <version>12.0.0-1-SNAPSHOT</version>
-  <description>Provides WebJar packaging for the draw.io JavaScript diagramming library.</description>
+  <version>12.1.8-SNAPSHOT</version>
+  <description>Provides packaging for the draw.io diagramming library.</description>
   <developers>
     <developer>
       <id>mflorea</id>
@@ -47,7 +47,7 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <draw.io.version>12.0.0</draw.io.version>
+    <draw.io.version>12.1.8</draw.io.version>
     <!-- The path to the folder where we unpack the draw.io sources. -->
     <draw.io.path>${project.build.directory}/drawio-${draw.io.version}</draw.io.path>
     <draw.io.webapp.path>${draw.io.path}/src/main/webapp</draw.io.webapp.path>
@@ -62,7 +62,7 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>mxgraph-editor</artifactId>
-      <version>4.0.4_${draw.io.version}</version>
+      <version>4.0.5_${draw.io.version}</version>
       <scope>runtime</scope>
     </dependency>
   </dependencies>
