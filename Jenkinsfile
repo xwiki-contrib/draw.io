@@ -25,4 +25,6 @@
 // See https://github.com/jenkinsci/workflow-cps-global-lib-plugin for details.
 
 xwikiModule {
+  // This module doesn't contain Java code. It packages Java code developed by JGraph Ltd which we don't control.
+  javadoc = false
 }

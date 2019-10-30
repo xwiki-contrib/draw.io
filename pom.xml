@@ -29,12 +29,13 @@
     <artifactId>parent-commons</artifactId>
     <version>11.3.4</version>
   </parent>
-  <artifactId>draw.io</artifactId>
-  <packaging>jar</packaging>
-  <name>draw.io WebJar</name>
+  <artifactId>draw.io-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>draw.io Parent POM</name>
   <version>12.1.8-SNAPSHOT</version>
   <description>Provides packaging for the draw.io diagramming library.</description>
   <developers>
+    <!-- Only for the packaging. The draw.io code is developed by JGraph Ltd. -->
     <developer>
       <id>mflorea</id>
       <name>Marius Dumitru Florea</name>
@@ -48,285 +49,64 @@
   </scm>
   <properties>
     <draw.io.version>12.1.8</draw.io.version>
+    <mxgraph.version>4.0.5</mxgraph.version>
     <!-- The path to the folder where we unpack the draw.io sources. -->
     <draw.io.path>${project.build.directory}/drawio-${draw.io.version}</draw.io.path>
-    <draw.io.webapp.path>${draw.io.path}/src/main/webapp</draw.io.webapp.path>
-    <!-- Follow the specifications regarding the WebJar content path. -->
-    <webjar.contentDirectory>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</webjar.contentDirectory>
-    <!-- Explicitely indicate it's a webjar -->
-    <xwiki.extension.jar.type>webjar</xwiki.extension.jar.type>
     <!-- No Java code here -->
-    <xwiki.clirr.skip>true</xwiki.clirr.skip>
+    <xwiki.revapi.skip>true</xwiki.revapi.skip>
   </properties>
-  <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>mxgraph-editor</artifactId>
-      <version>4.0.5_${draw.io.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-  </dependencies>
   <build>
-    <plugins>
-      <plugin>
-        <groupId>com.googlecode.maven-download-plugin</groupId>
-        <artifactId>download-maven-plugin</artifactId>
-        <version>1.4.2</version>
-        <executions>
-          <!-- Download the draw.io sources for the version (tag) we want to use. -->
-          <execution>
-            <id>download-draw.io-sources</id>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>wget</goal>
-            </goals>
-            <configuration>
-              <url>https://github.com/jgraph/drawio/archive/v${draw.io.version}.zip</url>
-              <unpack>true</unpack>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>replacer</artifactId>
-        <version>1.5.3</version>
-        <executions>
-          <execution>
-            <id>fix-invalid-javascript</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <regex>false</regex>
-          <basedir>${draw.io.webapp.path}/js</basedir>
-          <includes>
-            <include>diagramly/App.js</include>
-            <include>diagramly/Editor.js</include>
-            <include>diagramly/EditorUi.js</include>
-          </includes>
-          <replacements>
-            <replacement>
-              <!-- 'short' is a reserved keyword and using it as a variable name prevents us from minifying the
-                JavaScript code. Fortunately it's a local variable so we can safely rename it. -->
-              <token> short </token>
-              <value> shorter </value>
-            </replacement>
-            <replacement>
-              <!-- 'float' is a reserved keyword and using it as a property name prevents us from minifying the
-                JavaScript code. -->
-              <token>.float =</token>
-              <value>['float'] =</value>
-            </replacement>
-            <replacement>
-              <!-- Set the draw.io version. -->
-              <token>@DRAWIO-VERSION@</token>
-              <value>${draw.io.version}</value>
-            </replacement>
-          </replacements>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>net.alchim31.maven</groupId>
-        <artifactId>yuicompressor-maven-plugin</artifactId>
-        <version>1.5.1</version>
-        <executions>
-          <execution>
-            <!-- Minify the draw.io editor code before packing the jar. -->
-            <id>minify-draw.io-code</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>compress</goal>
-            </goals>
-            <configuration>
-              <sourceDirectory>${draw.io.webapp.path}/js</sourceDirectory>
-              <outputDirectory>${draw.io.webapp.path}/js</outputDirectory>
-              <excludes>
-                <exclude>**/*.css</exclude>
-                <exclude>**/*.min.js</exclude>
-                <!-- We minify the bundle instead. -->
-                <exclude>diagramly/**/*.js</exclude>
-                <!-- The mxGraph code is bundled as a separate extension. -->
-                <exclude>mxgraph/**/*.js</exclude>
-                <exclude>onedrive/**/*.js</exclude>
-                <exclude>embed.dev.js</exclude>
-              </excludes>
-              <aggregations>
-                <!-- Aggregate the draw.io editor code. -->
-                <aggregation>
-                  <insertNewLine>true</insertNewLine>
-                  <output>${draw.io.webapp.path}/js/draw.io.js</output>
-                  <includes>
-                    <!--                                           -->
-                    <!-- The following list is taken from Devel.js -->
-                    <!--                                           -->
-
-                    <!-- We don't include the dependencies (spin, base64, etc.). We load them with require.js -->
-
-                    <!-- We don't include the mxGraph client/editor. We load them with requrie.js -->
-
-                    <!-- Main classes -->
-                    <include>diagramly/sidebar/*.js</include>
-                    <include>diagramly/util/*.js</include>
-                    <include>diagramly/DrawioFile.js</include>
-                    <include>diagramly/LocalFile.js</include>
-                    <include>diagramly/LocalLibrary.js</include>
-                    <include>diagramly/StorageFile.js</include>
-                    <include>diagramly/StorageLibrary.js</include>
-                    <include>diagramly/RemoteFile.js</include>
-                    <include>diagramly/RemoteLibrary.js</include>
-                    <include>diagramly/Dialogs.js</include>
-                    <include>diagramly/Editor.js</include>
-                    <include>diagramly/EditorUi.js</include>
-                    <include>diagramly/DiffSync.js</include>
-                    <include>diagramly/Settings.js</include>
-                    <include>diagramly/DrawioFileSync.js</include>
-
-                    <!-- Comments -->
-                    <include>diagramly/DrawioComment.js</include>
-                    <!-- We don't include DriveComment.js -->
-
-                    <!-- Integrations with external services -->
-                    <include>diagramly/DrawioClient.js</include>
-                    <include>diagramly/DrawioUser.js</include>
-                    <include>diagramly/UrlLibrary.js</include>
-                    <!-- We don't include the integration with Google Drive, Dropbox, etc. -->
-
-                    <include>diagramly/App.js</include>
-                    <include>diagramly/Menus.js</include>
-                    <include>diagramly/Pages.js</include>
-                    <include>diagramly/Trees.js</include>
-                    <include>diagramly/Minimal.js</include>
-                    <include>diagramly/DistanceGuides.js</include>
-                    <include>diagramly/mxRuler.js</include>
-                    <include>diagramly/mxFreehand.js</include>
-                    <!-- We don't include the development tools. -->
-
-                    <!-- Vsdx/vssx support -->
-                    <include>diagramly/vsdx/*.js</include>
-
-                    <!-- We load jszip with require.js -->
-
-                    <!-- GraphML import -->
-                    <include>diagramly/graphml/*.js</include>
-
-                    <include>diagramly/mxTableLayout.js</include>
-                  </includes>
-                </aggregation>
-                <!-- Aggregate the draw.io viewer code. -->
-                <aggregation>
-                  <insertNewLine>true</insertNewLine>
-                  <output>${draw.io.webapp.path}/js/draw.io.viewer.js</output>
-                  <includes>
-                    <!-- This is required by the light box mode. -->
-                    <include>diagramly/Pages.js</include>
-                    <!-- This is required by the tool bar (addSvgShadow) -->
-                    <include>diagramly/Editor.js</include>
-                    <!-- This is required by the light box mode (setFileData). -->
-                    <include>diagramly/EditorUi.js</include>
-                    <!-- This is required to view the diagram. -->
-                    <include>diagramly/GraphViewer.js</include>
-                  </includes>
-                </aggregation>
-                <!-- Aggregate the draw.io initialization code. -->
-                <aggregation>
-                  <insertNewLine>true</insertNewLine>
-                  <output>${draw.io.webapp.path}/js/draw.io.init.js</output>
-                  <includes>
-                    <include>diagramly/Init.js</include>
-                    <!-- Fall-back on the Graph Editor defaults. -->
-                    <include>mxgraph/Init.js</include>
-                  </includes>
-                </aggregation>
-              </aggregations>
-            </configuration>
-          </execution>
-          <execution>
-            <!-- Minify the draw.io editor style sheets before packing the jar. -->
-            <id>minify-draw.io-style</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>compress</goal>
-            </goals>
-            <configuration>
-              <sourceDirectory>${draw.io.webapp.path}</sourceDirectory>
-              <outputDirectory>${draw.io.webapp.path}</outputDirectory>
-              <excludes>
-                <exclude>**/*.js</exclude>
-              </excludes>
-              <!-- Overwrite the original version with the minified one because some of the style sheets are loaded
-                automatically by the JavaScript code so we shouldn't change their name. -->
-              <nosuffix>true</nosuffix>
-            </configuration>
-          </execution>
-        </executions>
-        <configuration>
-          <preProcessAggregates>true</preProcessAggregates>
-          <jswarn>false</jswarn>
-          <!-- The default suffix uses the dash as separator (-min) but we prefer the dot (.min) because it is
-            currently more widely used in the JavaScript world. -->
-          <suffix>.min</suffix>
-        </configuration>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <!-- Copy the draw.io license. -->
-          <execution>
-            <id>copy-draw.io-license</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.build.outputDirectory}/META-INF</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${draw.io.path}</directory>
-                  <includes>
-                    <include>LICENSE</include>
-                  </includes>
-                </resource>
-              </resources>
-              <overwrite>true</overwrite>
-            </configuration>
-          </execution>
-          <!-- Copy the draw.io resources to the expected WebJar location. -->
-          <execution>
-            <id>copy-draw.io-resources</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${webjar.contentDirectory}</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${draw.io.webapp.path}</directory>
-                  <excludes>
-                    <exclude>WEB-INF/**</exclude>
-                    <exclude>js/deflate/**</exclude>
-                    <exclude>js/dropbox/**</exclude>
-                    <exclude>js/jscolor/**</exclude>
-                    <exclude>js/mxgraph/**</exclude>
-                    <exclude>js/onedrive/**</exclude>
-                    <exclude>js/sanitizer/**</exclude>
-                    <exclude>mxgraph/**</exclude>
-                    <exclude>*.html</exclude>
-                    <exclude>cache.manifest</exclude>
-                    <exclude>favicon.ico</exclude>
-                    <exclude>package.json</exclude>
-                    <exclude>yarn.lock</exclude>
-                  </excludes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>com.googlecode.maven-download-plugin</groupId>
+          <artifactId>download-maven-plugin</artifactId>
+          <version>1.4.2</version>
+          <executions>
+            <!-- Download the draw.io sources for the version (tag) we want to use. -->
+            <execution>
+              <id>download-draw.io-sources</id>
+              <phase>generate-resources</phase>
+              <goals>
+                <goal>wget</goal>
+              </goals>
+              <configuration>
+                <url>https://github.com/jgraph/drawio/archive/v${draw.io.version}.zip</url>
+                <unpack>true</unpack>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <executions>
+            <!-- Copy the draw.io license. -->
+            <execution>
+              <id>copy-draw.io-license</id>
+              <phase>prepare-package</phase>
+              <goals>
+                <goal>copy-resources</goal>
+              </goals>
+              <configuration>
+                <outputDirectory>${project.build.outputDirectory}/META-INF</outputDirectory>
+                <resources>
+                  <resource>
+                    <directory>${draw.io.path}</directory>
+                    <includes>
+                      <include>LICENSE</include>
+                    </includes>
+                  </resource>
+                </resources>
+                <overwrite>true</overwrite>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build>
+  <modules>
+    <module>draw.io-api</module>
+    <module>draw.io-webjar</module>
+  </modules>
 </project>
