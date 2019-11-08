@@ -32,7 +32,7 @@
   <artifactId>draw.io-parent</artifactId>
   <packaging>pom</packaging>
   <name>draw.io Parent POM</name>
-  <version>12.1.8-1-SNAPSHOT</version>
+  <version>12.2.2-SNAPSHOT</version>
   <description>Provides packaging for the draw.io diagramming library.</description>
   <developers>
     <!-- Only for the packaging. The draw.io code is developed by JGraph Ltd. -->
@@ -48,7 +48,7 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <draw.io.version>12.1.8</draw.io.version>
+    <draw.io.version>12.2.2</draw.io.version>
     <mxgraph.version>4.0.5</mxgraph.version>
     <!-- The path to the folder where we unpack the draw.io sources. -->
     <draw.io.path>${project.build.directory}/drawio-${draw.io.version}</draw.io.path>
