@@ -274,12 +274,20 @@
                     <exclude>js/onedrive/**</exclude>
                     <exclude>js/sanitizer/**</exclude>
                     <exclude>mxgraph/**</exclude>
+                    <!-- We exclude all the HTML files here and we include the ones we want below. -->
                     <exclude>*.html</exclude>
                     <exclude>cache.manifest</exclude>
                     <exclude>favicon.ico</exclude>
                     <exclude>package.json</exclude>
                     <exclude>yarn.lock</exclude>
                   </excludes>
+                </resource>
+                <resource>
+                  <directory>${draw.io.webapp.path}</directory>
+                  <includes>
+                    <!-- This is required by File / Open Library from / Browser... -->
+                    <include>open.html</include>
+                  </includes>
                 </resource>
               </resources>
             </configuration>
