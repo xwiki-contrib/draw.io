@@ -32,7 +32,7 @@
   <artifactId>draw.io-parent</artifactId>
   <packaging>pom</packaging>
   <name>draw.io Parent POM</name>
-  <version>12.3.3</version>
+  <version>12.3.3-1-SNAPSHOT</version>
   <description>Provides packaging for the draw.io diagramming library.</description>
   <developers>
     <!-- Only for the packaging. The draw.io code is developed by JGraph Ltd. -->
@@ -45,7 +45,7 @@
     <connection>scm:git:git://github.com/xwiki-contrib/draw.io.git</connection>
     <developerConnection>scm:git:git@github.com:xwiki-contrib/draw.io.git</developerConnection>
     <url>https://github.com/xwiki-contrib/draw.io/tree/master</url>
-    <tag>draw.io-12.3.3</tag>
+    <tag>HEAD</tag>
   </scm>
   <properties>
     <draw.io.version>12.3.3</draw.io.version>
