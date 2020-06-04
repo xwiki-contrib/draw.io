@@ -49,7 +49,7 @@
   </scm>
   <properties>
     <draw.io.version>12.3.3</draw.io.version>
-    <mxgraph.version>4.0.6</mxgraph.version>
+    <mxgraph.version>4.0.6_${draw.io.version}-1</mxgraph.version>
     <!-- The path to the folder where we unpack the draw.io sources. -->
     <draw.io.path>${project.build.directory}/drawio-${draw.io.version}</draw.io.path>
     <!-- No Java code here -->

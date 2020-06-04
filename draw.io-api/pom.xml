@@ -44,7 +44,7 @@
     <dependency>
       <groupId>org.xwiki.contrib</groupId>
       <artifactId>mxgraph-core</artifactId>
-      <version>${mxgraph.version}_${draw.io.version}</version>
+      <version>${mxgraph.version}</version>
     </dependency>
     <!-- Dependencies taken from https://github.com/jgraph/drawio/tree/master/src/main/webapp/WEB-INF/lib -->
     <dependency>
