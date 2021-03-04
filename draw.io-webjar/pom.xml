@@ -121,7 +121,7 @@
                 <exclude>diagramly/**/*.js</exclude>
                 <exclude>embed.dev.js</exclude>
               </excludes>
-              <!-- It's not our code todo -->
+              <!-- Skip these since it's not out code. -->
               <closureStrictModeInput>false</closureStrictModeInput>
               <closureEmitUseStrict>false</closureEmitUseStrict>
               <closureWarningLevels>

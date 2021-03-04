@@ -47,7 +47,7 @@
   </scm>
   <properties>
     <draw.io.version>14.4.3</draw.io.version>
-    <mxgraph.version>4.2.2_${draw.io.version}-SNAPSHOT</mxgraph.version>
+    <mxgraph.version>4.2.2_${draw.io.version}</mxgraph.version>
     <!-- The path to the folder where we unpack the draw.io sources. -->
     <draw.io.path>${project.build.directory}/drawio-${draw.io.version}</draw.io.path>
     <!-- No Java code here -->
