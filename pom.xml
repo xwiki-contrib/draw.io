@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
- *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -19,20 +18,19 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- *
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.xwiki.contrib</groupId>
-    <artifactId>parent-commons</artifactId>
-    <version>11.3.4</version>
+    <artifactId>parent-platform</artifactId>
+    <version>12.10.4</version>
   </parent>
   <artifactId>draw.io-parent</artifactId>
   <packaging>pom</packaging>
   <name>draw.io Parent POM</name>
-  <version>12.3.3-3-SNAPSHOT</version>
+  <version>14.4.3-SNAPSHOT</version>
   <description>Provides packaging for the draw.io diagramming library.</description>
   <developers>
     <!-- Only for the packaging. The draw.io code is developed by JGraph Ltd. -->
@@ -48,8 +46,8 @@
     <tag>HEAD</tag>
   </scm>
   <properties>
-    <draw.io.version>12.3.3</draw.io.version>
-    <mxgraph.version>4.0.6_${draw.io.version}-1</mxgraph.version>
+    <draw.io.version>14.4.3</draw.io.version>
+    <mxgraph.version>4.2.2_${draw.io.version}-SNAPSHOT</mxgraph.version>
     <!-- The path to the folder where we unpack the draw.io sources. -->
     <draw.io.path>${project.build.directory}/drawio-${draw.io.version}</draw.io.path>
     <!-- No Java code here -->
