@@ -193,6 +193,12 @@
 
                 <include>mxTableLayout.js</include>
               </includes>
+              <!-- Skip these since it's not out code. -->
+              <closureStrictModeInput>false</closureStrictModeInput>
+              <closureEmitUseStrict>false</closureEmitUseStrict>
+              <closureWarningLevels>
+                <es5Strict>WARNING</es5Strict>
+              </closureWarningLevels>
             </configuration>
           </execution>
           <execution>
@@ -225,6 +231,12 @@
                 <!-- This is required to view the diagram. -->
                 <include>GraphViewer.js</include>
               </includes>
+              <!-- Skip these since it's not out code. -->
+              <closureStrictModeInput>false</closureStrictModeInput>
+              <closureEmitUseStrict>false</closureEmitUseStrict>
+              <closureWarningLevels>
+                <es5Strict>WARNING</es5Strict>
+              </closureWarningLevels>
             </configuration>
           </execution>
           <execution>
@@ -252,6 +264,12 @@
                 <!-- Fall-back on the Graph Editor defaults. -->
                 <include>mxgraph/Init.js</include>
               </includes>
+              <!-- Skip these since it's not out code. -->
+              <closureStrictModeInput>false</closureStrictModeInput>
+              <closureEmitUseStrict>false</closureEmitUseStrict>
+              <closureWarningLevels>
+                <es5Strict>WARNING</es5Strict>
+              </closureWarningLevels>
             </configuration>
           </execution>
         </executions>
