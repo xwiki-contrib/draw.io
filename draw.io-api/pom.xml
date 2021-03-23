@@ -84,11 +84,6 @@
       <artifactId>appengine-api-1.0-sdk</artifactId>
       <version>1.9.63</version>
     </dependency>
-    <dependency>
-      <groupId>com.mxgraph</groupId>
-      <artifactId>gae-stub</artifactId>
-      <version>1.0-2</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -99,6 +94,10 @@
         <executions>
           <execution>
             <id>download-draw.io-sources</id>
+            <phase>generate-resources</phase>
+          </execution>
+          <execution>
+            <id>download-draw.io-gliffy-sources</id>
             <phase>generate-resources</phase>
           </execution>
         </executions>
@@ -127,6 +126,81 @@
                   </excludes>
                 </resource>
               </resources>
+            </configuration>
+          </execution>
+          <!-- Move sources needed for the gliffy import to be able to use the functionality in newer versions of
+          draw.io that no longer contains it. -->
+          <execution>
+            <id>copy-draw.io-gliffy-sources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${draw.io.path}/src/main/java/copy/com/mxgraph/io</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/io/gliffy</directory>
+                </resource>
+                <resource>
+                  <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/io</directory>
+                  <includes>
+                    <include>mxGraphMlCodec.java</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-draw.io-gliffy-graphml-sources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${draw.io.path}/src/main/java/copy/com/mxgraph/io/graphml</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/io/graphml</directory>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-draw.io-gliffy-OpenServlet-sources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${draw.io.path}/src/main/java/copy/com/mxgraph/online</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/online</directory>
+                  <includes>
+                    <include>OpenServlet.java</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+          <execution>
+            <id>copy-draw.io-gliffy-translation-resources</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.outputDirectory}/com/mxgraph/io/gliffy/importer</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/io/gliffy/importer</directory>
+                  <includes>
+                    <include>gliffyTranslation.properties</include>
+                  </includes>
+                </resource>
+              </resources>
+              <overwrite>true</overwrite>
             </configuration>
           </execution>
         </executions>
