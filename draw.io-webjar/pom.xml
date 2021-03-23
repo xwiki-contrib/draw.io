@@ -121,7 +121,7 @@
                 <exclude>diagramly/**/*.js</exclude>
                 <exclude>embed.dev.js</exclude>
               </excludes>
-              <!-- Skip these since it's not out code. -->
+              <!-- Skip these since it's not our code. -->
               <closureStrictModeInput>false</closureStrictModeInput>
               <closureEmitUseStrict>false</closureEmitUseStrict>
               <closureWarningLevels>
@@ -130,7 +130,7 @@
             </configuration>
           </execution>
           <execution>
-            <!-- Aggregate the draw.io editor code. -->
+            <!-- Override the default WebJar JavaScript aggregation step to aggregate the draw.io editor code.. -->
             <id>default-minify-1</id>
             <configuration>
               <sourceDir>${project.version}/js/diagramly</sourceDir>
@@ -193,7 +193,7 @@
 
                 <include>mxTableLayout.js</include>
               </includes>
-              <!-- Skip these since it's not out code. -->
+              <!-- Skip these since it's not our code. -->
               <closureStrictModeInput>false</closureStrictModeInput>
               <closureEmitUseStrict>false</closureEmitUseStrict>
               <closureWarningLevels>
@@ -231,7 +231,7 @@
                 <!-- This is required to view the diagram. -->
                 <include>GraphViewer.js</include>
               </includes>
-              <!-- Skip these since it's not out code. -->
+              <!-- Skip these since it's not our code. -->
               <closureStrictModeInput>false</closureStrictModeInput>
               <closureEmitUseStrict>false</closureEmitUseStrict>
               <closureWarningLevels>
@@ -264,7 +264,7 @@
                 <!-- Fall-back on the Graph Editor defaults. -->
                 <include>mxgraph/Init.js</include>
               </includes>
-              <!-- Skip these since it's not out code. -->
+              <!-- Skip these since it's not our code. -->
               <closureStrictModeInput>false</closureStrictModeInput>
               <closureEmitUseStrict>false</closureEmitUseStrict>
               <closureWarningLevels>
