@@ -79,11 +79,6 @@
       <artifactId>appengine-api-1.0-sdk</artifactId>
       <version>1.9.63</version>
     </dependency>
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.63</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -137,49 +132,29 @@
               <goal>copy-resources</goal>
             </goals>
             <configuration>
-              <outputDirectory>${draw.io.path}/src/main/java/copy/com/mxgraph/io</outputDirectory>
+              <outputDirectory>${draw.io.path}/src/main/java/copy/com/mxgraph</outputDirectory>
               <resources>
                 <resource>
                   <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/io/gliffy</directory>
+                  <targetPath>${draw.io.path}/src/main/java/copy/com/mxgraph/io</targetPath>
                 </resource>
                 <resource>
                   <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/io</directory>
                   <includes>
                     <include>mxGraphMlCodec.java</include>
                   </includes>
+                  <targetPath>${draw.io.path}/src/main/java/copy/com/mxgraph/io</targetPath>
                 </resource>
-              </resources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-draw.io-gliffy-graphml-sources</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${draw.io.path}/src/main/java/copy/com/mxgraph/io/graphml</outputDirectory>
-              <resources>
                 <resource>
                   <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/io/graphml</directory>
+                  <targetPath>${draw.io.path}/src/main/java/copy/com/mxgraph/io/graphml</targetPath>
                 </resource>
-              </resources>
-            </configuration>
-          </execution>
-          <execution>
-            <id>copy-draw.io-gliffy-OpenServlet-sources</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${draw.io.path}/src/main/java/copy/com/mxgraph/online</outputDirectory>
-              <resources>
                 <resource>
                   <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/online</directory>
                   <includes>
                     <include>OpenServlet.java</include>
                   </includes>
+                  <targetPath>${draw.io.path}/src/main/java/copy/com/mxgraph/online</targetPath>
                 </resource>
               </resources>
             </configuration>
@@ -254,16 +229,4 @@
       </plugin>
     </plugins>
   </build>
-  <repositories>
-    <repository>
-      <id>jgraph-drawio</id>
-      <url>https://packagecloud.io/jgraph/drawio/maven2</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
 </project>

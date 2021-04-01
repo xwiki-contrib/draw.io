@@ -114,6 +114,19 @@
             </execution>
           </executions>
         </plugin>
+        <plugin>
+          <groupId>com.github.blutorange</groupId>
+          <artifactId>closure-compiler-maven-plugin</artifactId>
+          <configuration>
+            <lineSeparator>\n</lineSeparator>
+            <!-- Skip these since it's not our code. -->
+            <closureStrictModeInput>false</closureStrictModeInput>
+            <closureEmitUseStrict>false</closureEmitUseStrict>
+            <closureWarningLevels>
+              <es5Strict>WARNING</es5Strict>
+            </closureWarningLevels>
+          </configuration>
+        </plugin>
       </plugins>
     </pluginManagement>
   </build>

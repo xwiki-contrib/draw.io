@@ -121,12 +121,6 @@
                 <exclude>diagramly/**/*.js</exclude>
                 <exclude>embed.dev.js</exclude>
               </excludes>
-              <!-- Skip these since it's not our code. -->
-              <closureStrictModeInput>false</closureStrictModeInput>
-              <closureEmitUseStrict>false</closureEmitUseStrict>
-              <closureWarningLevels>
-                <es5Strict>WARNING</es5Strict>
-              </closureWarningLevels>
             </configuration>
           </execution>
           <execution>
@@ -136,7 +130,6 @@
               <sourceDir>${project.version}/js/diagramly</sourceDir>
               <targetDir>${project.version}/js</targetDir>
               <outputFilename>draw.io.min.js</outputFilename>
-              <lineSeparator>\n</lineSeparator>
               <includes>
                 <!--                                           -->
                 <!-- The following list is taken from Devel.js -->
@@ -193,12 +186,6 @@
 
                 <include>mxTableLayout.js</include>
               </includes>
-              <!-- Skip these since it's not our code. -->
-              <closureStrictModeInput>false</closureStrictModeInput>
-              <closureEmitUseStrict>false</closureEmitUseStrict>
-              <closureWarningLevels>
-                <es5Strict>WARNING</es5Strict>
-              </closureWarningLevels>
             </configuration>
           </execution>
           <execution>
@@ -220,7 +207,6 @@
                 in the generated source map file.  -->
               <closureIncludeSourcesContent>true</closureIncludeSourcesContent>
               <outputFilename>draw.io.viewer.min.js</outputFilename>
-              <lineSeparator>\n</lineSeparator>
               <includes>
                 <!-- This is required by the light box mode. -->
                 <include>Pages.js</include>
@@ -231,12 +217,6 @@
                 <!-- This is required to view the diagram. -->
                 <include>GraphViewer.js</include>
               </includes>
-              <!-- Skip these since it's not our code. -->
-              <closureStrictModeInput>false</closureStrictModeInput>
-              <closureEmitUseStrict>false</closureEmitUseStrict>
-              <closureWarningLevels>
-                <es5Strict>WARNING</es5Strict>
-              </closureWarningLevels>
             </configuration>
           </execution>
           <execution>
@@ -258,18 +238,11 @@
                 in the generated source map file.  -->
               <closureIncludeSourcesContent>true</closureIncludeSourcesContent>
               <outputFilename>draw.io.init.min.js</outputFilename>
-              <lineSeparator>\n</lineSeparator>
               <includes>
                 <include>diagramly/Init.js</include>
                 <!-- Fall-back on the Graph Editor defaults. -->
                 <include>mxgraph/Init.js</include>
               </includes>
-              <!-- Skip these since it's not our code. -->
-              <closureStrictModeInput>false</closureStrictModeInput>
-              <closureEmitUseStrict>false</closureEmitUseStrict>
-              <closureWarningLevels>
-                <es5Strict>WARNING</es5Strict>
-              </closureWarningLevels>
             </configuration>
           </execution>
         </executions>
