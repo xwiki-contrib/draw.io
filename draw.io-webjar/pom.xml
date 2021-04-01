@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
- *
  * See the NOTICE file distributed with this work for additional
  * information regarding copyright ownership.
  *
@@ -19,7 +18,6 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- *
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
@@ -27,16 +25,14 @@
   <parent>
     <groupId>org.xwiki.contrib</groupId>
     <artifactId>draw.io-parent</artifactId>
-    <version>12.3.3-3-SNAPSHOT</version>
+    <version>14.4.3-SNAPSHOT</version>
   </parent>
   <artifactId>draw.io</artifactId>
-  <packaging>jar</packaging>
+  <packaging>webjar</packaging>
   <name>draw.io WebJar</name>
   <description>Provides WebJar packaging for the draw.io JavaScript diagramming library.</description>
   <properties>
     <draw.io.webapp.path>${draw.io.path}/src/main/webapp</draw.io.webapp.path>
-    <!-- Explicitely indicate it's a webjar -->
-    <xwiki.extension.jar.type>webjar</xwiki.extension.jar.type>
     <!-- Follow the specifications regarding the WebJar content path. -->
     <webjar.contentDirectory>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</webjar.contentDirectory>
   </properties>
@@ -62,201 +58,12 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>replacer</artifactId>
-        <version>1.5.3</version>
-        <executions>
-          <execution>
-            <id>fix-invalid-javascript</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <regex>false</regex>
-          <basedir>${draw.io.webapp.path}/js</basedir>
-          <includes>
-            <include>diagramly/App.js</include>
-            <include>diagramly/Editor.js</include>
-            <include>diagramly/EditorUi.js</include>
-          </includes>
-          <replacements>
-            <replacement>
-              <!-- 'short' is a reserved keyword and using it as a variable name prevents us from minifying the
-                JavaScript code. Fortunately it's a local variable so we can safely rename it. -->
-              <token> short </token>
-              <value> shorter </value>
-            </replacement>
-            <replacement>
-              <!-- 'float' is a reserved keyword and using it as a property name prevents us from minifying the
-                JavaScript code. -->
-              <token>.float =</token>
-              <value>['float'] =</value>
-            </replacement>
-            <replacement>
-              <!-- Set the draw.io version. -->
-              <token>@DRAWIO-VERSION@</token>
-              <value>${draw.io.version}</value>
-            </replacement>
-          </replacements>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>net.alchim31.maven</groupId>
-        <artifactId>yuicompressor-maven-plugin</artifactId>
-        <version>1.5.1</version>
-        <executions>
-          <execution>
-            <!-- Minify the draw.io editor code before packing the jar. -->
-            <id>minify-draw.io-code</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>compress</goal>
-            </goals>
-            <configuration>
-              <sourceDirectory>${draw.io.webapp.path}/js</sourceDirectory>
-              <outputDirectory>${draw.io.webapp.path}/js</outputDirectory>
-              <excludes>
-                <exclude>**/*.css</exclude>
-                <exclude>**/*.min.js</exclude>
-                <!-- We minify the bundle instead. -->
-                <exclude>diagramly/**/*.js</exclude>
-                <!-- The mxGraph code is bundled as a separate extension. -->
-                <exclude>mxgraph/**/*.js</exclude>
-                <exclude>onedrive/**/*.js</exclude>
-                <exclude>embed.dev.js</exclude>
-              </excludes>
-              <aggregations>
-                <!-- Aggregate the draw.io editor code. -->
-                <aggregation>
-                  <insertNewLine>true</insertNewLine>
-                  <output>${draw.io.webapp.path}/js/draw.io.js</output>
-                  <includes>
-                    <!--                                           -->
-                    <!-- The following list is taken from Devel.js -->
-                    <!--                                           -->
-
-                    <!-- We don't include the dependencies (spin, base64, etc.). We load them with require.js -->
-
-                    <!-- We don't include the mxGraph client/editor. We load them with requrie.js -->
-
-                    <!-- Main classes -->
-                    <include>diagramly/sidebar/*.js</include>
-                    <include>diagramly/util/*.js</include>
-                    <include>diagramly/DrawioFile.js</include>
-                    <include>diagramly/LocalFile.js</include>
-                    <include>diagramly/LocalLibrary.js</include>
-                    <include>diagramly/StorageFile.js</include>
-                    <include>diagramly/StorageLibrary.js</include>
-                    <include>diagramly/RemoteFile.js</include>
-                    <include>diagramly/RemoteLibrary.js</include>
-                    <include>diagramly/Dialogs.js</include>
-                    <include>diagramly/Editor.js</include>
-                    <include>diagramly/EditorUi.js</include>
-                    <include>diagramly/DiffSync.js</include>
-                    <include>diagramly/Settings.js</include>
-                    <include>diagramly/DrawioFileSync.js</include>
-
-                    <!-- Comments -->
-                    <include>diagramly/DrawioComment.js</include>
-                    <!-- We don't include DriveComment.js -->
-
-                    <!-- Integrations with external services -->
-                    <include>diagramly/DrawioClient.js</include>
-                    <include>diagramly/DrawioUser.js</include>
-                    <include>diagramly/UrlLibrary.js</include>
-                    <!-- We don't include the integration with Google Drive, Dropbox, etc. -->
-
-                    <include>diagramly/App.js</include>
-                    <include>diagramly/Menus.js</include>
-                    <include>diagramly/Pages.js</include>
-                    <include>diagramly/Trees.js</include>
-                    <include>diagramly/Minimal.js</include>
-                    <include>diagramly/DistanceGuides.js</include>
-                    <include>diagramly/mxRuler.js</include>
-                    <include>diagramly/mxFreehand.js</include>
-                    <!-- We don't include the development tools. -->
-
-                    <!-- Vsdx/vssx support -->
-                    <include>diagramly/vsdx/*.js</include>
-
-                    <!-- We load jszip with require.js -->
-
-                    <!-- GraphML import -->
-                    <include>diagramly/graphml/*.js</include>
-
-                    <include>diagramly/mxTableLayout.js</include>
-                  </includes>
-                </aggregation>
-                <!-- Aggregate the draw.io viewer code. -->
-                <aggregation>
-                  <insertNewLine>true</insertNewLine>
-                  <output>${draw.io.webapp.path}/js/draw.io.viewer.js</output>
-                  <includes>
-                    <!-- This is required by the light box mode. -->
-                    <include>diagramly/Pages.js</include>
-                    <!-- This is required by the tool bar (addSvgShadow) -->
-                    <include>diagramly/Editor.js</include>
-                    <!-- This is required by the light box mode (setFileData). -->
-                    <include>diagramly/EditorUi.js</include>
-                    <!-- This is required to view the diagram. -->
-                    <include>diagramly/GraphViewer.js</include>
-                  </includes>
-                </aggregation>
-                <!-- Aggregate the draw.io initialization code. -->
-                <aggregation>
-                  <insertNewLine>true</insertNewLine>
-                  <output>${draw.io.webapp.path}/js/draw.io.init.js</output>
-                  <includes>
-                    <include>diagramly/Init.js</include>
-                    <!-- Fall-back on the Graph Editor defaults. -->
-                    <include>mxgraph/Init.js</include>
-                  </includes>
-                </aggregation>
-              </aggregations>
-            </configuration>
-          </execution>
-          <execution>
-            <!-- Minify the draw.io editor style sheets before packing the jar. -->
-            <id>minify-draw.io-style</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>compress</goal>
-            </goals>
-            <configuration>
-              <sourceDirectory>${draw.io.webapp.path}</sourceDirectory>
-              <outputDirectory>${draw.io.webapp.path}</outputDirectory>
-              <excludes>
-                <exclude>**/*.js</exclude>
-              </excludes>
-              <!-- Overwrite the original version with the minified one because some of the style sheets are loaded
-                automatically by the JavaScript code so we shouldn't change their name. -->
-              <nosuffix>true</nosuffix>
-            </configuration>
-          </execution>
-        </executions>
-        <configuration>
-          <preProcessAggregates>true</preProcessAggregates>
-          <jswarn>false</jswarn>
-          <!-- The default suffix uses the dash as separator (-min) but we prefer the dot (.min) because it is
-            currently more widely used in the JavaScript world. -->
-          <suffix>.min</suffix>
-        </configuration>
-      </plugin>
-      <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
-          <!-- Copy the draw.io license. -->
-          <execution>
-            <id>copy-draw.io-license</id>
-            <phase>prepare-package</phase>
-          </execution>
           <!-- Copy the draw.io resources to the expected WebJar location. -->
           <execution>
             <id>copy-draw.io-resources</id>
-            <phase>prepare-package</phase>
+            <phase>process-resources</phase>
             <goals>
               <goal>copy-resources</goal>
             </goals>
@@ -291,6 +98,163 @@
                 </resource>
               </resources>
             </configuration>
+          </execution>
+          <!-- Copy the draw.io license. -->
+          <execution>
+            <id>copy-draw.io-license</id>
+            <phase>prepare-package</phase>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.github.blutorange</groupId>
+        <artifactId>closure-compiler-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-minify</id>
+            <configuration>
+              <sourceDir>${project.version}/js</sourceDir>
+              <targetDir>${project.version}/js</targetDir>
+              <excludes>
+                <exclude>**/*.min.js</exclude>
+                <!-- We minify the bundle instead. -->
+                <exclude>diagramly/**/*.js</exclude>
+                <exclude>embed.dev.js</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- Override the default WebJar JavaScript aggregation step to aggregate the draw.io editor code.. -->
+            <id>default-minify-1</id>
+            <configuration>
+              <sourceDir>${project.version}/js/diagramly</sourceDir>
+              <targetDir>${project.version}/js</targetDir>
+              <outputFilename>draw.io.min.js</outputFilename>
+              <includes>
+                <!--                                           -->
+                <!-- The following list is taken from Devel.js -->
+                <!--                                           -->
+
+                <!-- We don't include the dependencies (spin, base64, etc.). We load them with require.js -->
+
+                <!-- We don't include the mxGraph client/editor. We load them with requrie.js -->
+
+                <!-- Main classes -->
+                <include>sidebar/*.js</include>
+                <include>util/*.js</include>
+                <include>DrawioFile.js</include>
+                <include>LocalFile.js</include>
+                <include>LocalLibrary.js</include>
+                <include>StorageFile.js</include>
+                <include>StorageLibrary.js</include>
+                <include>RemoteFile.js</include>
+                <include>RemoteLibrary.js</include>
+                <include>Dialogs.js</include>
+                <include>Editor.js</include>
+                <include>EditorUi.js</include>
+                <include>DiffSync.js</include>
+                <include>Settings.js</include>
+                <include>DrawioFileSync.js</include>
+
+                <!-- Comments -->
+                <include>DrawioComment.js</include>
+                <!-- We don't include DriveComment.js -->
+
+                <!-- Integrations with external services -->
+                <include>DrawioClient.js</include>
+                <include>DrawioUser.js</include>
+                <include>UrlLibrary.js</include>
+                <!-- We don't include the integration with Google Drive, Dropbox, etc. -->
+
+                <include>App.js</include>
+                <include>Menus.js</include>
+                <include>Pages.js</include>
+                <include>Trees.js</include>
+                <include>Minimal.js</include>
+                <include>DistanceGuides.js</include>
+                <include>mxRuler.js</include>
+                <include>mxFreehand.js</include>
+                <!-- We don't include the development tools. -->
+
+                <!-- Vsdx/vssx support -->
+                <include>vsdx/*.js</include>
+
+                <!-- We load jszip with require.js -->
+
+                <!-- GraphML import -->
+                <include>graphml/*.js</include>
+
+                <include>mxTableLayout.js</include>
+              </includes>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- Aggregate the draw.io viewer code. -->
+            <id>agregate-drawio-viewer</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>minify</goal>
+            </goals>
+            <configuration>
+              <baseSourceDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}</baseSourceDir>
+              <sourceDir>${project.version}/js/diagramly</sourceDir>
+              <baseTargetDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}</baseTargetDir>
+              <targetDir>${project.version}/js</targetDir>
+              <skipMerge>false</skipMerge>
+              <!-- Include the polyfills in the aggregated JavaScript file. -->
+              <closureRewritePolyfills>true</closureRewritePolyfills>
+              <!-- There's no configuration option to keep the unminified aggregated file so we include its source
+                in the generated source map file.  -->
+              <closureIncludeSourcesContent>true</closureIncludeSourcesContent>
+              <outputFilename>draw.io.viewer.min.js</outputFilename>
+              <includes>
+                <!-- This is required by the light box mode. -->
+                <include>Pages.js</include>
+                <!-- This is required by the tool bar (addSvgShadow) -->
+                <include>Editor.js</include>
+                <!-- This is required by the light box mode (setFileData). -->
+                <include>EditorUi.js</include>
+                <!-- This is required to view the diagram. -->
+                <include>GraphViewer.js</include>
+              </includes>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- Aggregate the draw.io initialization code. -->
+            <id>agregate-drawio-init</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>minify</goal>
+            </goals>
+            <configuration>
+              <baseSourceDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}</baseSourceDir>
+              <sourceDir>${project.version}/js</sourceDir>
+              <baseTargetDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}</baseTargetDir>
+              <targetDir>${project.version}/js</targetDir>
+              <skipMerge>false</skipMerge>
+              <!-- Include the polyfills in the aggregated JavaScript file. -->
+              <closureRewritePolyfills>true</closureRewritePolyfills>
+              <!-- There's no configuration option to keep the unminified aggregated file so we include its source
+                in the generated source map file.  -->
+              <closureIncludeSourcesContent>true</closureIncludeSourcesContent>
+              <outputFilename>draw.io.init.min.js</outputFilename>
+              <includes>
+                <include>diagramly/Init.js</include>
+                <!-- Fall-back on the Graph Editor defaults. -->
+                <include>mxgraph/Init.js</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.github.searls</groupId>
+        <artifactId>jasmine-maven-plugin</artifactId>
+        <!-- Skip the execution of the Jasmine tests. -->
+        <executions>
+          <execution>
+            <id>default-test</id>
+            <phase>none</phase>
           </execution>
         </executions>
       </plugin>
