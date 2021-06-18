@@ -36,14 +36,6 @@
     <!-- Follow the specifications regarding the WebJar content path. -->
     <webjar.contentDirectory>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</webjar.contentDirectory>
   </properties>
-  <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>mxgraph-editor</artifactId>
-      <version>${mxgraph.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-  </dependencies>
   <build>
     <plugins>
       <!-- Download the draw.io sources for the version (tag) we want to use. -->
@@ -241,7 +233,7 @@
             </configuration>
           </execution>
           <execution>
-            <!-- TODO. -->
+            <!-- Agregate the grapheditor code, which replaces the archived mxgraph. -->
             <id>agregate-drawio-grapheditor</id>
             <phase>compile</phase>
             <goals>
@@ -265,7 +257,7 @@
             </configuration>
           </execution>
           <execution>
-            <!-- TODO. -->
+            <!-- Agregate the graphviewer code, which replaces the archived mxgraph. -->
             <id>agregate-drawio-graphviewer</id>
             <phase>compile</phase>
             <goals>
