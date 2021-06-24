@@ -36,14 +36,6 @@
     <!-- Follow the specifications regarding the WebJar content path. -->
     <webjar.contentDirectory>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}/${project.version}</webjar.contentDirectory>
   </properties>
-  <dependencies>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>mxgraph-editor</artifactId>
-      <version>${mxgraph.version}</version>
-      <scope>runtime</scope>
-    </dependency>
-  </dependencies>
   <build>
     <plugins>
       <!-- Download the draw.io sources for the version (tag) we want to use. -->
@@ -74,13 +66,8 @@
                   <directory>${draw.io.webapp.path}</directory>
                   <excludes>
                     <exclude>WEB-INF/**</exclude>
-                    <exclude>js/deflate/**</exclude>
                     <exclude>js/dropbox/**</exclude>
-                    <exclude>js/jscolor/**</exclude>
-                    <exclude>js/grapheditor/**</exclude>
                     <exclude>js/onedrive/**</exclude>
-                    <exclude>js/sanitizer/**</exclude>
-                    <exclude>mxgraph/**</exclude>
                     <!-- We exclude all the HTML files here and we include the ones we want below. -->
                     <exclude>*.html</exclude>
                     <exclude>cache.manifest</exclude>
@@ -94,9 +81,6 @@
                   <includes>
                     <!-- This is required by File / Open Library from / Browser... -->
                     <include>open.html</include>
-                    <!-- Some Graph Editor configurations are required since they are not covered by draw.io's
-                      initialization step. -->
-                    <include>js/grapheditor/Init.js</include>
                   </includes>
                 </resource>
               </resources>
@@ -245,6 +229,59 @@
                 <include>diagramly/Init.js</include>
                 <!-- Fall-back on the Graph Editor defaults. -->
                 <include>grapheditor/Init.js</include>
+              </includes>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- Agregate the grapheditor code, which replaces the archived mxgraph. -->
+            <id>agregate-drawio-grapheditor</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>minify</goal>
+            </goals>
+            <configuration>
+              <baseSourceDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}</baseSourceDir>
+              <sourceDir>${project.version}/js/grapheditor</sourceDir>
+              <baseTargetDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}</baseTargetDir>
+              <targetDir>${project.version}/js</targetDir>
+              <skipMerge>false</skipMerge>
+              <!-- Include the polyfills in the aggregated JavaScript file. -->
+              <closureRewritePolyfills>true</closureRewritePolyfills>
+              <!-- There's no configuration option to keep the unminified aggregated file so we include its source
+                in the generated source map file.  -->
+              <closureIncludeSourcesContent>true</closureIncludeSourcesContent>
+              <outputFilename>draw.io.grapheditor.min.js</outputFilename>
+              <excludes>
+                <exclude>Init.js</exclude>
+                <exclude>*.min.js</exclude>
+              </excludes>
+            </configuration>
+          </execution>
+          <execution>
+            <!-- Agregate the graphviewer code, which replaces the archived mxgraph. -->
+            <id>agregate-drawio-graphviewer</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>minify</goal>
+            </goals>
+            <configuration>
+              <baseSourceDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}</baseSourceDir>
+              <sourceDir>${project.version}/js/grapheditor</sourceDir>
+              <baseTargetDir>${project.build.outputDirectory}/META-INF/resources/webjars/${project.artifactId}</baseTargetDir>
+              <targetDir>${project.version}/js</targetDir>
+              <skipMerge>false</skipMerge>
+              <!-- Include the polyfills in the aggregated JavaScript file. -->
+              <closureRewritePolyfills>true</closureRewritePolyfills>
+              <!-- There's no configuration option to keep the unminified aggregated file so we include its source
+                in the generated source map file.  -->
+              <closureIncludeSourcesContent>true</closureIncludeSourcesContent>
+              <outputFilename>draw.io.graphviewer.min.js</outputFilename>
+              <includes>
+                <include>Graph.js</include>
+                <include>Shapes.js</include>
+                <include>Editor.js</include>
+                <include>EditorUi.js</include>
+                <include>Actions.js</include>
               </includes>
             </configuration>
           </execution>
