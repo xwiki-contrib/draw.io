@@ -253,6 +253,7 @@
               <outputFilename>draw.io.grapheditor.min.js</outputFilename>
               <excludes>
                 <exclude>Init.js</exclude>
+                <exclude>*.min.js</exclude>
               </excludes>
             </configuration>
           </execution>
