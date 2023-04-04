@@ -47,7 +47,7 @@
   </scm>
   <properties>
     <draw.io.version>20.5.0</draw.io.version>
-    <mxgraph.version>4.2.2_${draw.io.version}</mxgraph.version>
+    <mxgraph.version>4.2.2_final</mxgraph.version>
     <draw.io-gliffy.version>13.4.8</draw.io-gliffy.version>
     <!-- The path to the folder where we unpack the draw.io sources. -->
     <draw.io.path>${project.build.directory}/drawio-${draw.io.version}</draw.io.path>
