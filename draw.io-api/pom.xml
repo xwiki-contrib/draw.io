@@ -120,6 +120,15 @@
                 <resource>
                   <directory>${draw.io.path}/src/main/java</directory>
                   <excludes>
+                    <exclude>com/mxgraph/online/AbsAuth.java</exclude>
+                    <exclude>com/mxgraph/online/AbsCache.java</exclude>
+                    <exclude>com/mxgraph/online/ServletComm.java</exclude>
+                    <exclude>com/mxgraph/online/GitlabAuth.java</exclude>
+                    <exclude>com/mxgraph/online/AtlasAuth.java</exclude>
+                    <exclude>com/mxgraph/online/GitHubAuth.java</exclude>
+                    <exclude>com/mxgraph/online/DropboxAuth.java</exclude>
+                    <exclude>com/mxgraph/online/GoogleAuth.java</exclude>
+                    <exclude>com/mxgraph/online/MSGraphAuth.java</exclude>
                     <exclude>com/mxgraph/online/AbsAuthServlet.java</exclude>
                     <exclude>com/mxgraph/online/MSGraphAuthServlet.java</exclude>
                     <exclude>com/mxgraph/online/GoogleAuthServlet.java</exclude>
