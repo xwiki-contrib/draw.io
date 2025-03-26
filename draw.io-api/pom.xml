@@ -152,8 +152,11 @@
               <outputDirectory>${draw.io.path}/src/main/java/copy/com/mxgraph</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/io/gliffy</directory>
-                  <targetPath>${draw.io.path}/src/main/java/copy/com/mxgraph/io</targetPath>
+                  <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/io/gliffy/importer</directory>
+                  <excludes>
+                    <exclude>GliffyDiagramConverter.java</exclude>
+                  </excludes>
+                  <targetPath>${draw.io.path}/src/main/java/copy/com/mxgraph/io/gliffy/importer</targetPath>
                 </resource>
                 <resource>
                   <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/io</directory>
@@ -172,13 +175,6 @@
                     <include>OpenServlet.java</include>
                   </includes>
                   <targetPath>${draw.io.path}/src/main/java/copy/com/mxgraph/online</targetPath>
-                </resource>
-                <resource>
-                  <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/online</directory>
-                  <includes>
-                    <include>Utils.java</include>
-                  </includes>
-                  <targetPath>${draw.io.path}/src/main/java/copy/com/mxgraph/online/gliffy</targetPath>
                 </resource>
                 <resource>
                   <directory>${draw.io-gliffy.path}/src/main/java/com/mxgraph/view</directory>
@@ -207,63 +203,6 @@
                 </resource>
               </resources>
               <overwrite>true</overwrite>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Some methods from Utils.java needed by gliffy import have been deleted in newer versions, so the old class
-      is copied in a different package and the class imports need to be changed. -->
-      <plugin>
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>replacer</artifactId>
-        <version>1.5.3</version>
-        <executions>
-          <execution>
-            <id>updateUtilsImport</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
-            <configuration>
-              <file>${draw.io.path}/src/main/java/copy/com/mxgraph/online/gliffy/Utils.java</file>
-              <replacements>
-                <replacement>
-                  <token>package com\.mxgraph\.online</token>
-                  <value>package com\.mxgraph\.online\.gliffy</value>
-                </replacement>
-              </replacements>
-            </configuration>
-          </execution>
-          <execution>
-            <id>updateUtilsImport2</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
-            <configuration>
-              <file>${draw.io.path}/src/main/java/copy/com/mxgraph/io/model/GliffyObject.java</file>
-              <replacements>
-                <replacement>
-                  <token>online\.Utils</token>
-                  <value>online\.gliffy\.Utils</value>
-                </replacement>
-              </replacements>
-            </configuration>
-          </execution>
-          <execution>
-            <id>updateUtilsImport3</id>
-            <phase>process-resources</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
-            <configuration>
-              <file>${draw.io.path}/src/main/java/copy/com/mxgraph/io/importer/GliffyDiagramConverter.java</file>
-              <replacements>
-                <replacement>
-                  <token>online\.Utils</token>
-                  <value>online\.gliffy\.Utils</value>
-                </replacement>
-              </replacements>
             </configuration>
           </execution>
         </executions>
