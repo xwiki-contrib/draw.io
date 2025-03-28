@@ -22,14 +22,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.google.gson.GsonBuilder;
 import com.mxgraph.io.gliffy.model.EmbeddedResources;
 import com.mxgraph.io.gliffy.model.Page;
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.io.gliffy.model.Constraint;
 import com.mxgraph.io.gliffy.model.Constraint.ConstraintData;
 import com.mxgraph.io.gliffy.model.Constraints;
-import com.mxgraph.io.gliffy.model.Diagram;
 import com.mxgraph.io.gliffy.model.EmbeddedResources.Resource;
 import com.mxgraph.io.gliffy.model.GliffyLayer;
 import com.mxgraph.io.gliffy.model.GliffyObject;
@@ -52,8 +50,9 @@ import com.mxgraph.util.mxXmlUtils;
 import com.mxgraph.view.mxGraphHeadless;
 
 /**
- * Performs a conversion of a Gliffy diagram into a Draw.io diagram
- * TODO: Make it work for multiple pages!!
+ * Performs a conversion of a Gliffy diagram into a Draw.io diagram.
+ * This code was adapted to comply to the new structure of gliffy diagrams
+ *
  * <p>
  * Example :
  * <p>
@@ -62,15 +61,15 @@ import com.mxgraph.view.mxGraphHeadless;
  * converter.getGraphXml();</i>
  * </code>
  */
-public class GliffyDiagramConverter
+public class NewGliffyDiagramConverter
 {
     Logger logger = Logger.getLogger("GliffyDiagramConverter");
 
-    private String diagramString;
-
-    private Diagram gliffyDiagram;
+    private Page gliffyDiagramPage;
 
     private mxGraphHeadless drawioDiagram;
+
+    private EmbeddedResources embeddedResources;
 
     private Map<String, GliffyObject> vertices;
 
@@ -86,47 +85,36 @@ public class GliffyDiagramConverter
 
     /**
      * Constructs a new converter and starts a conversion.
-     *
-     * @param gliffyDiagramString JSON string of a gliffy diagram
      */
-    public GliffyDiagramConverter(String gliffyDiagramString)
+    public NewGliffyDiagramConverter(Page gliffyDiagramPage, EmbeddedResources embeddedResources)
     {
         vertices = new LinkedHashMap<String, GliffyObject>();
         layers = new LinkedHashMap<String, GliffyLayer>();
-        this.diagramString = gliffyDiagramString;
         drawioDiagram = new mxGraphHeadless();
         //Disable parent (groups) auto extend feature as it miss with the coordinates of vsdx format
         drawioDiagram.setExtendParents(false);
         drawioDiagram.setExtendParentsOnAdd(false);
         drawioDiagram.setConstrainChildren(false);
         this.report = new StringBuilder();
+        this.gliffyDiagramPage = gliffyDiagramPage;
+        this.embeddedResources = embeddedResources;
         start();
     }
 
     private void start()
     {
-        // creates a diagram object from the JSON string
-        this.gliffyDiagram = new GsonBuilder().registerTypeAdapterFactory(new PostDeserializer()).create()
-            .fromJson(diagramString, Diagram.class);
+        collectLayersAndConvert(layers, gliffyDiagramPage.getScene().layers);
 
-        Collection<GliffyLayer> diagramLayers = new ArrayList<>();
-        Collection<GliffyObject> diagramObjects = new ArrayList<>();
-        for (Page page : gliffyDiagram.pages) {
-            diagramLayers.addAll(page.getScene().layers);
-            diagramObjects.addAll(page.getScene().objects);
-        }
-        collectLayersAndConvert(layers, diagramLayers);
-
-        collectVerticesAndConvert(vertices, diagramObjects, null);
+        collectVerticesAndConvert(vertices, gliffyDiagramPage.getScene().objects, null);
 
         //sort objects by the order specified in the Gliffy diagram
-        sortObjectsByOrder(diagramObjects);
+        sortObjectsByOrder(gliffyDiagramPage.getScene().objects);
 
         drawioDiagram.getModel().beginUpdate();
 
         try {
             importLayers();
-            for (GliffyObject obj : diagramObjects) {
+            for (GliffyObject obj : gliffyDiagramPage.getScene().objects) {
                 try {
                     importObject(obj, obj.parent);
                 } catch (Throwable thr) {
@@ -146,10 +134,7 @@ public class GliffyDiagramConverter
     {
         Object root = drawioDiagram.getModel().getRoot();
 
-        List<GliffyLayer> layers = new ArrayList<>();
-        for (Page page : gliffyDiagram.pages) {
-            layers.addAll(page.getScene().layers);
-        }
+        List<GliffyLayer> layers = gliffyDiagramPage.getScene().layers;
 
         if (!layers.isEmpty()) {
             sortLayersByOrder(layers);
@@ -535,23 +520,9 @@ public class GliffyDiagramConverter
         mxCodec codec = new mxCodec();
         Element node = (Element) codec.encode(drawioDiagram.getModel());
         node.setAttribute("style", "default-style2");
-        String backgroundColor = "white";
-        boolean isGridOn = false;
-        boolean isDrawingGuidesOn = false;
-        for (Page page : gliffyDiagram.pages) {
-            if (!page.getScene().background.isEmpty()) {
-                backgroundColor = page.getScene().background;
-            }
-            if (!page.getScene().gridOn) {
-                isGridOn = true;
-            }
-            if (!page.getScene().drawingGuidesOn) {
-                isDrawingGuidesOn = true;
-            }
-        }
-        node.setAttribute("background", backgroundColor);
-        node.setAttribute("grid", isGridOn ? "1" : "0");
-        node.setAttribute("guides", isDrawingGuidesOn ? "1" : "0");
+        node.setAttribute("background", gliffyDiagramPage.getScene().background);
+        node.setAttribute("grid", gliffyDiagramPage.getScene().gridOn ? "1" : "0");
+        node.setAttribute("guides", gliffyDiagramPage.getScene().drawingGuidesOn ? "1" : "0");
         String xml = mxXmlUtils.getXml(node);
         return xml;
     }
@@ -726,13 +697,8 @@ public class GliffyDiagramConverter
                         mxGeo.setOffset(new mxPoint(lblX, lblY));
                         cell.setGeometry(mxGeo);
 
-                        String backgroundColor = "white";
-                        for (Page page : gliffyDiagram.pages) {
-                            if (!page.getScene().background.isEmpty()) {
-                                backgroundColor = page.getScene().background;
-                            }
-                        }
-                        style.append("labelBackgroundColor=" + backgroundColor).append(";");
+                        style.append("labelBackgroundColor=" + gliffyDiagramPage.getScene().backgroundColor).append(
+                            ";");
                         //should we force horizontal align for text on lines?
                         //Most probably yes, as extracting alignment from html messes with some cases [set halign to null later]
                         //style.append("align=center;");
@@ -756,7 +722,7 @@ public class GliffyDiagramConverter
                 GliffySvg svg = graphic.Svg;
                 cell.setVertex(true);
                 style.append("shape=image;imageAspect=0;");
-                Resource res = gliffyDiagram.embeddedResources.get(svg.embeddedResourceId);
+                Resource res = this.embeddedResources.get(svg.embeddedResourceId);
                 SVGImporterUtils svgUtils = new SVGImporterUtils();
                 res.data = svgUtils.setViewBox(res.data);
                 style.append("image=data:image/svg+xml,").append(res.getBase64EncodedData()).append(";");
