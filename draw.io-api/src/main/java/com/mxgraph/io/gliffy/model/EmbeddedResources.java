@@ -12,7 +12,7 @@ public class EmbeddedResources
 
 	public static class Resource
 	{
-		public Integer id;
+		public String id;
 
 		public String mimeType;
 
@@ -36,18 +36,18 @@ public class EmbeddedResources
 
 	public List<Resource> resources;
 
-	public Map<Integer, Resource> resourceMap;
+	public Map<String, Resource> resourceMap;
 
 	public void setResources(List<Resource> resources)
 	{
 		this.resources = resources;
 	}
 
-	public Resource get(Integer id)
+	public Resource get(String id)
 	{
 		if (resourceMap == null)
 		{
-			resourceMap = new HashMap<Integer, Resource>();
+			resourceMap = new HashMap<String, Resource>();
 			for (Resource r : resources)
 			{
 				resourceMap.put(r.id, r);

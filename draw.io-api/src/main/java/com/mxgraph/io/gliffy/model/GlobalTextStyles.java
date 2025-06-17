@@ -8,17 +8,29 @@ public class GlobalTextStyles
 
 	public String fill;
 
+	public String fillColor;
+
 	public String stroke;
 
 	public int strokeWidth;
+
+	public String strokeColor;
 
 	public String darkStyle;
 
 	public int startArrow;
 
+	public int arrowType;
+
 	public int orthoMode;
 
 	public boolean italic;
+
+	public boolean bold;
+
+	public boolean underline;
+
+	public String interpolationType;
 
 	public String getSize()
 	{

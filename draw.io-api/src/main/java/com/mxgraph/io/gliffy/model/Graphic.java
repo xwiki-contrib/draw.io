@@ -50,7 +50,7 @@ public class Graphic
 
 		public String interpolationType;
 		
-		public Integer cornerRadius;
+		public Float cornerRadius;
 
 		public List<float[]> controlPath = new ArrayList<float[]>();
 	}
@@ -97,7 +97,7 @@ public class Graphic
 
 	public static class GliffySvg extends GliffyShape
 	{
-		public Integer embeddedResourceId;
+		public String embeddedResourceId;
 	}
 	
 	public static class GliffyMindmap extends GliffyShape

@@ -1,19 +1,24 @@
 package com.mxgraph.io.gliffy.model;
 
-public class Shape
+public class Line
 {
-    public String tid;
-    public int strokeWidth;
-    public String strokeColor;
     public String fillColor;
+
+    public String stroke;
+
+    public int strokeWidth;
+
+    public String strokeColor;
+
+    public int startArrow;
+
     public int arrowType;
+
+    public int orthoMode;
+
     public String interpolationType;
+
     public float cornerRadius;
-    public boolean gradient;
-    public boolean dropShadow;
-    public int state;
-    public int shadowX;
-    public int shadowY;
-    public int opacity;
+
     public GlobalTextStyles text;
 }

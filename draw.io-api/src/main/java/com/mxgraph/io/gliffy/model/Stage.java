@@ -5,6 +5,8 @@ import java.util.List;
 public class Stage {
     private String background;
 
+    public String color;
+
     private float width;
 
     private float height;
@@ -37,7 +39,7 @@ public class Stage {
 
     public boolean printPortrait;
 
-    public String themeData;
+    public ThemeData themeData;
 
     public String viewportType;
 
