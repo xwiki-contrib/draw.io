@@ -607,7 +607,7 @@ public class OldGliffyDiagramConverter
                         style.append("pointerEvents=0;");
                     }
                 }
-                if (style.lastIndexOf("strokeColor") == -1 && !shape.isNoFill()) {
+                if (style.lastIndexOf("strokeColor") == -1) {
                     String strokeClr = gliffyObject.isUseFillColor4StrokeColor() ? shape.fillColor : shape.strokeColor;
                     style.append("strokeColor=" + strokeClr).append(";");
                 }
