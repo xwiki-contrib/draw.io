@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.xwiki.contrib</groupId>
     <artifactId>draw.io-parent</artifactId>
-    <version>24.5.5-4-SNAPSHOT</version>
+    <version>32.6.10-SNAPSHOT</version>
   </parent>
   <packaging>jar</packaging>
   <artifactId>draw.io-api</artifactId>
@@ -79,11 +79,6 @@
       <artifactId>gson</artifactId>
       <version>2.8.9</version>
     </dependency>
-    <dependency>
-      <groupId>com.google.appengine</groupId>
-      <artifactId>appengine-api-1.0-sdk</artifactId>
-      <version>1.9.63</version>
-    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -105,9 +100,9 @@
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <executions>
-          <!-- Move sources to be able to exclude specific files. This can be removed when
-            https://packagecloud.io/jgraph/drawio will contain gae-stub-1.0-3, which is needed for building these
-            files. -->
+          <!-- Move sources to be able to exclude specific files (the authentication and caching code, which we don't
+            need and which requires additional dependencies). Note that recent draw.io versions keep the Java sources under
+            src/main/server/java. -->
           <execution>
             <id>copy-sources</id>
             <phase>process-resources</phase>
@@ -118,13 +113,13 @@
               <outputDirectory>${draw.io.path}/src/main/java/copy</outputDirectory>
               <resources>
                 <resource>
-                  <directory>${draw.io.path}/src/main/java</directory>
+                  <directory>${draw.io.path}/src/main/server/java</directory>
                   <excludes>
                     <exclude>com/mxgraph/online/AbsAuth.java</exclude>
-                    <exclude>com/mxgraph/online/AbsCache.java</exclude>
+                    <exclude>com/mxgraph/online/CacheFacade.java</exclude>
+                    <exclude>com/mxgraph/online/SecretFacade.java</exclude>
                     <exclude>com/mxgraph/online/ServletComm.java</exclude>
                     <exclude>com/mxgraph/online/GitlabAuth.java</exclude>
-                    <exclude>com/mxgraph/online/AtlasAuth.java</exclude>
                     <exclude>com/mxgraph/online/GitHubAuth.java</exclude>
                     <exclude>com/mxgraph/online/DropboxAuth.java</exclude>
                     <exclude>com/mxgraph/online/GoogleAuth.java</exclude>
@@ -181,6 +176,11 @@
               </resources>
             </configuration>
           </execution>
+          <!-- Copy the draw.io license. -->
+          <execution>
+            <id>copy-draw.io-license</id>
+            <phase>prepare-package</phase>
+          </execution>
           <execution>
             <id>copy-draw.io-gliffy-translation-resources</id>
             <phase>prepare-package</phase>
@@ -236,16 +236,6 @@
                 </resource>
               </resources>
             </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Copy the draw.io license. -->
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-draw.io-license</id>
-            <phase>prepare-package</phase>
           </execution>
         </executions>
       </plugin>

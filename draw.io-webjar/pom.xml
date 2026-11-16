@@ -25,7 +25,7 @@
   <parent>
     <groupId>org.xwiki.contrib</groupId>
     <artifactId>draw.io-parent</artifactId>
-    <version>24.5.5-4-SNAPSHOT</version>
+    <version>32.6.10-SNAPSHOT</version>
   </parent>
   <artifactId>draw.io</artifactId>
   <packaging>webjar</packaging>
@@ -129,6 +129,11 @@
                 <!-- Main classes -->
                 <include>sidebar/*.js</include>
                 <include>util/*.js</include>
+                <!-- Animated GIF / MP4 export -->
+                <include>gif/GifEncoder.js</include>
+                <include>gif/AnimatedExport.js</include>
+                <include>gif/Mp4Encoder.js</include>
+                <include>gif/AnimationExport.js</include>
                 <include>DrawioFile.js</include>
                 <include>LocalFile.js</include>
                 <include>LocalLibrary.js</include>
@@ -136,11 +141,14 @@
                 <include>StorageLibrary.js</include>
                 <include>RemoteFile.js</include>
                 <include>RemoteLibrary.js</include>
+                <include>EmbedFile.js</include>
                 <include>Dialogs.js</include>
                 <include>Editor.js</include>
                 <include>EditorUi.js</include>
+                <include>ConfigEditor.js</include>
                 <include>DiffSync.js</include>
                 <include>Settings.js</include>
+                <include>DrawioFilePolling.js</include>
                 <include>DrawioFileSync.js</include>
 
                 <!-- Comments -->
@@ -151,19 +159,27 @@
                 <include>DrawioClient.js</include>
                 <include>DrawioUser.js</include>
                 <include>UrlLibrary.js</include>
-                <!-- We don't include the integration with Google Drive, Dropbox, etc. -->
+                <include>HomeDialog.js</include>
+                <!-- We don't include the integration with Google Drive, OneDrive, etc. -->
 
                 <include>App.js</include>
                 <include>Menus.js</include>
                 <include>Pages.js</include>
                 <include>Trees.js</include>
+                <include>ForceExplorer.js</include>
+                <include>SpringHandle.js</include>
                 <include>Minimal.js</include>
-                <include>DistanceGuides.js</include>
                 <include>mxRuler.js</include>
                 <include>mxFreehand.js</include>
                 <!-- We don't include the development tools. -->
+                <include>Simple.js</include>
+
+                <!-- We don't include SpringMove.js, ElkLayout.js and LibavoidRouting.js because they depend on vendor
+                  bundles (ELK, libavoid) and upstream ships them only in extensions.min.js, which draw.io loads on
+                  demand. -->
 
                 <!-- Vsdx/vssx support -->
+                <include>emf/*.js</include>
                 <include>vsdx/*.js</include>
 
                 <!-- We load jszip with require.js -->
@@ -194,13 +210,21 @@
                 in the generated source map file.  -->
               <closureIncludeSourcesContent>true</closureIncludeSourcesContent>
               <outputFilename>draw.io.viewer.min.js</outputFilename>
+              <!-- Same files and order as the upstream viewer build. -->
               <includes>
-                <!-- This is required by the light box mode. -->
-                <include>Pages.js</include>
+                <include>DrawioFile.js</include>
+                <include>LocalFile.js</include>
                 <!-- This is required by the tool bar (addSvgShadow) -->
                 <include>Editor.js</include>
                 <!-- This is required by the light box mode (setFileData). -->
                 <include>EditorUi.js</include>
+                <!-- This is required by the light box mode. -->
+                <include>Pages.js</include>
+                <include>Trees.js</include>
+                <include>ForceExplorer.js</include>
+                <include>Minimal.js</include>
+                <include>DrawioComment.js</include>
+                <include>DrawioUser.js</include>
                 <!-- This is required to view the diagram. -->
                 <include>GraphViewer.js</include>
               </includes>
@@ -253,16 +277,17 @@
               <outputFilename>draw.io.grapheditor.min.js</outputFilename>
               <!-- We provide the list of includes rather than the excludes to specify the aggregate order. -->
               <includes>
-                <include>Actions.js</include>
-                <include>Dialogs.js</include>
                 <include>Editor.js</include>
                 <include>EditorUi.js</include>
-                <include>Graph.js</include>
-                <include>Format.js</include>
-                <include>Menus.js</include>
-                <include>Shapes.js</include>
                 <include>Sidebar.js</include>
+                <include>Graph.js</include>
+                <include>InlineToolbar.js</include>
+                <include>Format.js</include>
+                <include>Shapes.js</include>
+                <include>Actions.js</include>
+                <include>Menus.js</include>
                 <include>Toolbar.js</include>
+                <include>Dialogs.js</include>
               </includes>
             </configuration>
           </execution>
@@ -285,11 +310,12 @@
                 in the generated source map file.  -->
               <closureIncludeSourcesContent>true</closureIncludeSourcesContent>
               <outputFilename>draw.io.graphviewer.min.js</outputFilename>
+              <!-- Same order as the upstream viewer build (Graph.js expects Editor at load time). -->
               <includes>
-                <include>Graph.js</include>
-                <include>Shapes.js</include>
                 <include>Editor.js</include>
                 <include>EditorUi.js</include>
+                <include>Graph.js</include>
+                <include>Shapes.js</include>
                 <include>Actions.js</include>
                 <include>Format.js</include>
               </includes>
